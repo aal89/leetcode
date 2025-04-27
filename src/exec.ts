@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import { ok } from 'assert';
+import fs from 'fs/promises';
 
 class BootstrapError extends Error {
     constructor(message: string) {
@@ -28,36 +29,52 @@ export type Exercise = {
     run: () => TestCase[];
 };
 
+const allExercises = async () => {
+    return (await fs.readdir(__dirname, { withFileTypes: true }))
+        .filter((dirent) => dirent.isDirectory())
+        .map((dirent) => dirent.name);
+};
+
+const runExercise = async (exerciseNumber: string) => {
+    const exercise = (await import(`./${exerciseNumber}`)).default as Exercise;
+
+    ok(
+        isExercise(exercise),
+        new BootstrapError(chalk`{red.bold Exercise ${exerciseNumber} does not export a valid exercise type}`),
+    );
+
+    console.log(chalk`{bold.blue Executing ${exerciseNumber}...}`);
+
+    const testcases = exercise.run();
+
+    const onlySet = testcases.some((testcase) => testcase.onlyThis);
+    const filteredTestcases = onlySet ? testcases.filter((testcase) => testcase.onlyThis) : testcases;
+
+    filteredTestcases.forEach((testcase, idx) => {
+        const passed = JSON.stringify(testcase.result) === JSON.stringify(testcase.expected);
+        console.log(chalk`{blue Testcase ${idx}} {bold.${passed ? 'green' : 'red'} ${passed ? 'PASSED' : 'FAILED'}}`);
+
+        if (!passed) {
+            console.log(chalk`  {bold Expected:} ${testcase.expected}`);
+            console.log(chalk`  {bold Received:} ${testcase.result}`);
+        }
+    });
+};
+
 (async () => {
     try {
         ok(process.argv.length > 2, new BootstrapError(chalk`{red.bold No exercise specified in argv}`));
         const userInput = process.argv[2];
 
-        const exercise = (await import(`./${userInput}`)).default as Exercise;
+        if (userInput === 'all') {
+            const allExercisesList = await allExercises();
 
-        ok(
-            isExercise(exercise),
-            new BootstrapError(chalk`{red.bold Exercise ${userInput} does not export a valid exercise}`),
-        );
-
-        console.log(chalk`{bold.blue Executing ${userInput}...}`);
-
-        const testcases = exercise.run();
-
-        const onlySet = testcases.some((testcase) => testcase.onlyThis);
-        const filteredTestcases = onlySet ? testcases.filter((testcase) => testcase.onlyThis) : testcases;
-
-        filteredTestcases.forEach((testcase, idx) => {
-            const passed = testcase.result === testcase.expected;
-            console.log(
-                chalk`{blue Testcase ${idx}} {bold.${passed ? 'green' : 'red'} ${passed ? 'PASSED' : 'FAILED'}}`,
-            );
-
-            if (!passed) {
-                console.log(chalk`  {bold Expected:} ${testcase.expected}`);
-                console.log(chalk`  {bold Received:} ${testcase.result}`);
+            for (const exercise of allExercisesList) {
+                await runExercise(exercise);
             }
-        });
+        } else {
+            await runExercise(userInput);
+        }
     } catch (err) {
         if (err instanceof BootstrapError) {
             console.error(err.message);

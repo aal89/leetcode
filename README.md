@@ -20,7 +20,7 @@ To execute an exercise run the following:
 npm run exercise 3392
 ```
 
-_Note: the first and only argument should be the exercise number (or in this project the folder name) to run_
+_Note: the first and only argument should be the exercise number (or in this project the folder name) to run. You could also use 'all' to run all exercises in src folder_
 
 ## Contributions
 Feel free to open issues or submit pull requests if you have suggestions or improvements.
