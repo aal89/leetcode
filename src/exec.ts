@@ -47,16 +47,13 @@ const runExercise = async (exerciseNumber: string) => {
 
     const testcases = exercise.run();
 
-    const onlySet = testcases.some((testcase) => testcase.onlyThis);
-    const filteredTestcases = onlySet ? testcases.filter((testcase) => testcase.onlyThis) : testcases;
-
-    filteredTestcases.forEach((testcase, idx) => {
+    testcases.forEach((testcase, idx) => {
         const passed = JSON.stringify(testcase.result) === JSON.stringify(testcase.expected);
         console.log(chalk`{blue Testcase ${idx}} {bold.${passed ? 'green' : 'red'} ${passed ? 'PASSED' : 'FAILED'}}`);
 
         if (!passed) {
-            console.log(chalk`  {bold Expected:} ${testcase.expected}`);
-            console.log(chalk`  {bold Received:} ${testcase.result}`);
+            console.log(chalk`  {bold Expected:} ${JSON.stringify(testcase.expected)}`);
+            console.log(chalk`  {bold Received:} ${JSON.stringify(testcase.result)}`);
         }
     });
 };
