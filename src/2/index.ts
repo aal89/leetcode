@@ -9,7 +9,8 @@ class ListNode {
     }
 }
 
-function addTwoNumbers(l1: ListNode | null, l2: ListNode | null): ListNode | null {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function addTwoNumbersS1(l1: ListNode | null, l2: ListNode | null): ListNode | null {
     if (!l1 && !l2) {
         return null;
     }
@@ -56,6 +57,28 @@ function addTwoNumbers(l1: ListNode | null, l2: ListNode | null): ListNode | nul
     );
 }
 
+function addTwoNumbers(l1: ListNode | null, l2: ListNode | null): ListNode | null {
+    const head = new ListNode(0);
+    let iterNode = head;
+    let carry = 0;
+
+    while (l1 || l2) {
+        const sum = (l1?.val ?? 0) + (l2?.val ?? 0) + carry;
+        carry = Math.floor(sum / 10);
+        iterNode.next = new ListNode(sum % 10);
+
+        iterNode = iterNode.next;
+        l1 = l1 ? l1.next : null;
+        l2 = l2 ? l2.next : null;
+    }
+
+    if (carry > 0) {
+        iterNode.next = new ListNode(carry);
+    }
+
+    return head.next;
+}
+
 const testCase0a = new ListNode(2, new ListNode(4, new ListNode(3)));
 const testCase0b = new ListNode(5, new ListNode(6, new ListNode(4)));
 const testCase0ans = new ListNode(7, new ListNode(0, new ListNode(8)));
@@ -74,7 +97,6 @@ const testCase2ans = new ListNode(
         new ListNode(9, new ListNode(9, new ListNode(0, new ListNode(0, new ListNode(0, new ListNode(1)))))),
     ),
 );
-
 export default {
     run: () => [
         { result: addTwoNumbers(null, null), expected: null },
