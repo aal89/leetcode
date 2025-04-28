@@ -20,7 +20,6 @@ const isExercise = (exercise: unknown): exercise is Exercise => {
 };
 
 type TestCase = {
-    onlyThis?: boolean;
     result: unknown;
     expected: unknown;
 };
@@ -43,9 +42,11 @@ const runExercise = async (exerciseNumber: string) => {
         new BootstrapError(chalk`{red.bold Exercise ${exerciseNumber} does not export a valid exercise type}`),
     );
 
-    console.log(chalk`{bold.blue Executing ${exerciseNumber}...}`);
+    console.time(chalk`{bold.blue Executing ${exerciseNumber}}`);
 
     const testcases = exercise.run();
+
+    console.timeEnd(chalk`{bold.blue Executing ${exerciseNumber}}`);
 
     testcases.forEach((testcase, idx) => {
         const passed = JSON.stringify(testcase.result) === JSON.stringify(testcase.expected);

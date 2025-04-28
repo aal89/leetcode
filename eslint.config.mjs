@@ -34,7 +34,6 @@ export default defineConfig([
         },
 
         rules: {
-            'no-console': 1,
             'prettier/prettier': 2,
         },
     },
