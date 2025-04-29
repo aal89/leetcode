@@ -1,13 +1,35 @@
-// this is marked as a hard problem in leetcode. probably something with two pointers and no sort()
-// will make you beat the curve. this however is almost on top of the curve already.
-// they ask for an O(log (m+n)) solution. lets come back to this later
 function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
-    const zipped = [...nums1, ...nums2].sort((a, b) => a - b);
-    const isOdd = zipped.length % 2 === 1;
+    //  naive implementation, slower solution than below, still very acceptable if you ask me
+    // but they want to see a merge sort
+    // const zipped = [...nums1, ...nums2].sort((a, b) => a - b);
+
+    const nlen = nums1.length;
+    const mlen = nums2.length;
+    let npointer = 0;
+    let mpointer = 0;
+    const sortedMerged: number[] = [];
+
+    // merge sort with two pointers, fast solution 2ms, 90th percentile
+    for (let i = 0; i < nlen + mlen; i++) {
+        if (npointer === nlen) {
+            sortedMerged.push(nums2[mpointer]);
+            mpointer++;
+        } else if (mpointer === mlen) {
+            sortedMerged.push(nums1[npointer]);
+            npointer++;
+        } else if (nums1[npointer] < nums2[mpointer]) {
+            sortedMerged.push(nums1[npointer]);
+            npointer++;
+        } else {
+            sortedMerged.push(nums2[mpointer]);
+            mpointer++;
+        }
+    }
+    const isOdd = sortedMerged.length % 2 === 1;
 
     return isOdd
-        ? zipped[Math.floor(zipped.length / 2)]
-        : (zipped[zipped.length / 2] + zipped[zipped.length / 2 - 1]) / 2;
+        ? sortedMerged[Math.floor(sortedMerged.length / 2)]
+        : (sortedMerged[sortedMerged.length / 2] + sortedMerged[sortedMerged.length / 2 - 1]) / 2;
 }
 
 export default {
