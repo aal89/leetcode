@@ -3,7 +3,7 @@ This repository contains all my solutions to LeetCode exercises. Each solution i
 
 ## Structure
 - Each problem is stored in its own directory.
-- Solutions are written in various programming languages, depending on the problem.
+- Solutions are written in the TypeScript language.
 
 ## How to Use
 1. Clone the repository:
@@ -12,18 +12,17 @@ This repository contains all my solutions to LeetCode exercises. Each solution i
   ```
 2. Navigate to the desired problem directory to view the solution.
 
-## Usage
+## Install & usage
 
 To execute an exercise run the following:
 
 ```sh
+nvm use # one time or depending on how many times you switch node versions
+npm i # one time to install all dependencies
 npm run exercise 3392
 ```
 
 _Note: the first and only argument should be the exercise number (or in this project the folder name) to run. You could also use 'all' to run all exercises in src folder_
 
-## Contributions
-Feel free to open issues or submit pull requests if you have suggestions or improvements.
-
 ## License
-This repository is licensed under the MIT License. See the `LICENSE` file for details.
+This repository is licensed under the MIT License.
